@@ -1,13 +1,3 @@
-/_build
-/cover
-/deps
-/doc
-/.fetch
-erl_crash.dump
-*.ez
-*.beam
-/config/*.secret.exs
-.elixir_ls/
 defmodule Blog.MixProject do
   use Mix.Project
 
