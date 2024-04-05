@@ -10,7 +10,7 @@ defmodule Blog do
   """
   alias Cognac, as: C
 
-  def fetch_posts(count \\ 10, attr \\ [:id, :title, :body]) do
+  def fetch_posts(count \\ 10, attr \\ [:id, :title]) do
     base_url = "https://api.github.com/graphql"
 
     headers =
@@ -18,7 +18,7 @@ defmodule Blog do
 
     query = [
       repository:
-        {[owner: "tlarevo", name: "cms"],
+        {[owner: "tlarevo", name: "blog"],
          [
            discussions:
              {[first: count, orderBy: [field: :CREATED_AT, direction: :DESC]], [nodes: attr]}
