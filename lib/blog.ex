@@ -8,9 +8,8 @@ defmodule Blog do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
-  alias Cognac, as: C
 
-  def fetch_posts(count \\ 10, attr \\ [:id, :title]) do
+  def fetch_posts(count \\ 10, attr \\ [:id, :number, :title]) do
     base_url = "https://api.github.com/graphql"
 
     headers =
@@ -25,9 +24,36 @@ defmodule Blog do
          ]}
     ]
 
-    query_string = C.query(query, output: :binary)
+    query_string = Cognac.query(query, output: :binary)
     request = Req.new(url: base_url, headers: headers) |> AbsintheClient.attach()
 
+    Req.post(request, graphql: query_string) |> handle_response() |> process_data()
+  end
+
+  def fetch_post(id) do
+    base_url = "https://api.github.com/graphql"
+
+    headers = [authorization: "Bearer #{Application.fetch_env!(:blog, :github_token)}"]
+
+    query = [
+      repository:
+        {[owner: "tlarevo", name: "blog"],
+         [
+           discussion:
+             {[number: id],
+              [
+                :id,
+                :number,
+                :title,
+                :body,
+                comments:
+                  {[first: 10], [:totalCount, nodes: [:id, :body, :createdAt, :updatedAt]]}
+              ]}
+         ]}
+    ]
+
+    query_string = Cognac.query(query, output: :binary)
+    request = Req.new(url: base_url, headers: headers) |> AbsintheClient.attach()
     Req.post(request, graphql: query_string) |> handle_response() |> process_data()
   end
 
@@ -42,6 +68,9 @@ defmodule Blog do
 
   defp process_data(%{"data" => %{"repository" => %{"discussions" => %{"nodes" => nodes}}}}),
     do: nodes
+
+  defp process_data(%{"data" => %{"repository" => %{"discussion" => discussion}}}),
+    do: discussion
 
   defp process_data(nil), do: nil
 end
