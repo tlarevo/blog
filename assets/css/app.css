@@ -2,4 +2,31 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* This file is for your main application CSS */
+@layer base {
+    pre {
+        @apply bg-gray-100 dark:bg-gray-800 p-4 overflow-x-auto leading-relaxed;
+    }
+
+    code {
+        @apply bg-gray-100 dark:bg-gray-800 px-1 py-0.5 font-bold;
+    }
+
+    blockquote {
+        @apply border-l-4 border-primary-light dark:border-primary-dark pl-4 text-gray-600 dark:text-gray-400;
+    }
+
+    hr {
+        @apply border-t-2 border-dotted border-border-light dark:border-border-dark my-4;
+    }
+}
+
+@layer components {
+    .tag-link {
+        @apply border-b-2 border-primary-light dark:border-primary-dark hover:bg-primary-light dark:hover:bg-primary-dark hover:text-white;
+    }
+}

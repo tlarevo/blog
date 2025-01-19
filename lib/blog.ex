@@ -9,13 +9,17 @@ defmodule Blog do
   if it comes from the database, an external API or others.
   """
 
-  def fetch_posts(count \\ 10, attr \\ [:id, :number, :title]) do
-    base_url = "https://api.github.com/graphql"
+  defp get_base_url() do
+    Application.fetch_env!(:blog, :base_url)
+  end
 
-    headers =
-      [authorization: "Bearer #{Application.fetch_env!(:blog, :github_token)}"]
+  defp get_headers() do
+    Application.fetch_env!(:blog, :github_token)
+    |> then(&[authorization: "Bearer #{&1}"])
+  end
 
-    query = [
+  defp build_list_posts_query(count, attr) do
+    [
       repository:
         {[owner: "tlarevo", name: "blog"],
          [
@@ -23,19 +27,10 @@ defmodule Blog do
              {[first: count, orderBy: [field: :CREATED_AT, direction: :DESC]], [nodes: attr]}
          ]}
     ]
-
-    query_string = Cognac.query(query, output: :binary)
-    request = Req.new(url: base_url, headers: headers) |> AbsintheClient.attach()
-
-    Req.post(request, graphql: query_string) |> handle_response() |> process_data()
   end
 
-  def fetch_post(id) do
-    base_url = "https://api.github.com/graphql"
-
-    headers = [authorization: "Bearer #{Application.fetch_env!(:blog, :github_token)}"]
-
-    query = [
+  defp build_fetch_post_query(id) do
+    [
       repository:
         {[owner: "tlarevo", name: "blog"],
          [
@@ -51,10 +46,34 @@ defmodule Blog do
               ]}
          ]}
     ]
+  end
 
-    query_string = Cognac.query(query, output: :binary)
-    request = Req.new(url: base_url, headers: headers) |> AbsintheClient.attach()
-    Req.post(request, graphql: query_string) |> handle_response() |> process_data()
+  defp create_query_string(query) do
+    Cognac.query(query, output: :binary)
+  end
+
+  def fetch_posts(count \\ 10, attr \\ [:id, :number, :title]) do
+    build_list_posts_query(count, attr)
+    |> create_query_string()
+    |> then(fn query_string ->
+      Req.new(url: get_base_url(), headers: get_headers())
+      |> AbsintheClient.attach()
+      |> Req.post(graphql: query_string)
+    end)
+    |> handle_response()
+    |> process_data()
+  end
+
+  def fetch_post(id) do
+    build_fetch_post_query(id)
+    |> create_query_string()
+    |> then(fn query_string ->
+      Req.new(url: get_base_url(), headers: get_headers())
+      |> AbsintheClient.attach()
+      |> Req.post(graphql: query_string)
+    end)
+    |> handle_response()
+    |> process_data()
   end
 
   defp handle_response({:ok, %Req.Response{status: 200, body: body}}), do: body

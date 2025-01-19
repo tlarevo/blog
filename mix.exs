@@ -57,7 +57,8 @@ defmodule Blog.MixProject do
       {:bandit, "~> 1.2"},
       {:absinthe_client, "~> 0.1.0"},
       {:cognac, "~> 0.8.0"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:exsync, "~> 0.4", only: :dev}
     ]
   end
 
