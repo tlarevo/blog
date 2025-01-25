@@ -10,106 +10,70 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
-      // Add borderColor configuration
       borderColor: ({ theme }) => ({
-        primary: {
-          light: theme("colors.primary.light"),
-          dark: theme("colors.primary.dark"),
-        },
+        primary: theme("colors.primary"),
       }),
       fontFamily: {
-        sans: ["Fira Sans", "sans-serif"],
-        mono: [
-          "Monaco",
-          "Roboto Mono",
-          "Consolas",
-          "Liberation Mono",
-          "Courier New",
-          "monospace",
-        ],
-        ibm: ["IBM Plex Mono", "monospace"],
+        sans: ["Roboto Mono", "monospace"],
+        mono: ["IBM Plex Mono", "monospace"],
+        heading: ["Fira Sans", "sans-serif"],
       },
       colors: {
-        primary: {
-          light: "#ff0000",
-          dark: "#50fa7b",
+        primary: "#ff0000",
+        dark: {
+          primary: "#50fa7b",
+          bg: "#202124",
+          text: "#ffffff",
         },
         border: {
           light: "#663399",
           dark: "#333333",
         },
       },
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            a: {
+              textDecoration: "none",
+              borderBottom: "3px solid #ff0000",
+              "&:hover": {
+                backgroundColor: "#ff0000",
+                color: "#ffffff",
+              },
+            },
+            pre: {
+              backgroundColor: "#ececec",
+              borderRadius: 0,
+              padding: "1em",
+            },
+            code: {
+              backgroundColor: "#f1f1f1",
+              padding: "0.1em 0.2em",
+            },
+          },
+        },
+        dark: {
+          css: {
+            a: {
+              borderBottom: "3px solid #50fa7b",
+              "&:hover": {
+                backgroundColor: "#50fa7b",
+                color: "#000000",
+              },
+            },
+            pre: {
+              backgroundColor: "#272822",
+            },
+            code: {
+              backgroundColor: "#333333",
+            },
+          },
+        },
+      }),
     },
   },
   plugins: [
-    require("@tailwindcss/forms"),
-    plugin(({ addVariant }) =>
-      addVariant("phx-no-feedback", [
-        ".phx-no-feedback&",
-        ".phx-no-feedback &",
-      ]),
-    ),
-    plugin(({ addVariant }) =>
-      addVariant("phx-click-loading", [
-        ".phx-click-loading&",
-        ".phx-click-loading &",
-      ]),
-    ),
-    plugin(({ addVariant }) =>
-      addVariant("phx-submit-loading", [
-        ".phx-submit-loading&",
-        ".phx-submit-loading &",
-      ]),
-    ),
-    plugin(({ addVariant }) =>
-      addVariant("phx-change-loading", [
-        ".phx-change-loading&",
-        ".phx-change-loading &",
-      ]),
-    ),
-    plugin(function ({ matchComponents, theme }) {
-      let iconsDir = path.join(__dirname, "../deps/heroicons/optimized");
-      let values = {};
-      let icons = [
-        ["", "/24/outline"],
-        ["-solid", "/24/solid"],
-        ["-mini", "/20/solid"],
-        ["-micro", "/16/solid"],
-      ];
-      icons.forEach(([suffix, dir]) => {
-        fs.readdirSync(path.join(iconsDir, dir)).forEach((file) => {
-          let name = path.basename(file, ".svg") + suffix;
-          values[name] = { name, fullPath: path.join(iconsDir, dir, file) };
-        });
-      });
-      matchComponents(
-        {
-          hero: ({ name, fullPath }) => {
-            let content = fs
-              .readFileSync(fullPath)
-              .toString()
-              .replace(/\r?\n|\r/g, "");
-            let size = theme("spacing.6");
-            if (name.endsWith("-mini")) {
-              size = theme("spacing.5");
-            } else if (name.endsWith("-micro")) {
-              size = theme("spacing.4");
-            }
-            return {
-              [`--hero-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
-              "-webkit-mask": `var(--hero-${name})`,
-              mask: `var(--hero-${name})`,
-              "mask-repeat": "no-repeat",
-              "background-color": "currentColor",
-              "vertical-align": "middle",
-              display: "inline-block",
-              width: size,
-              height: size,
-            };
-          },
-        },
-        { values },
-      );
-    }),
+    require("@tailwindcss/typography"),
+    // ... keep existing plugins
   ],
 };

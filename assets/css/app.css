@@ -8,13 +8,23 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
+    html {
+        @apply font-sans text-[15px];
+        line-height: 1.6em;
+    }
+
     body {
-        @apply bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white;
+        @apply bg-white dark:bg-dark-bg text-zinc-900 dark:text-dark-text;
+        margin: 8px;
+    }
+
+    ::selection {
+        @apply bg-primary text-white dark:bg-dark-primary dark:text-black;
+    }
+
+    hr {
+        @apply border-0 border-t-4 border-dotted border-primary dark:border-dark-primary my-4;
     }
 
     h1,
@@ -23,55 +33,133 @@
     h4,
     h5,
     h6 {
-        @apply font-mono;
+        @apply font-heading mt-8 mb-4;
+
+        &::before {
+            @apply text-primary dark:text-dark-primary;
+            content: "# ";
+        }
     }
 
-    pre {
-        @apply bg-zinc-100 dark:bg-zinc-800 p-4 rounded-none overflow-x-auto my-4 text-sm;
+    h2::before {
+        content: "## ";
+    }
+    h3::before {
+        content: "### ";
+    }
+    h4::before {
+        content: "#### ";
+    }
+    h5::before {
+        content: "##### ";
+    }
+    h6::before {
+        content: "###### ";
+    }
+
+    a {
+        @apply text-inherit no-underline border-b-4 border-primary dark:border-dark-primary;
+        &:hover {
+            @apply bg-primary text-white dark:bg-dark-primary dark:text-black;
+        }
     }
 
     code {
         @apply bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 text-sm font-mono;
     }
 
-    a {
-        @apply text-zinc-900 dark:text-white hover:underline;
+    pre {
+        @apply bg-zinc-100 dark:bg-zinc-800 p-4 my-4 overflow-x-auto;
+        code {
+            @apply bg-transparent p-0;
+        }
     }
 
-    /* Blog post styles */
-    .post-title {
-        @apply text-2xl font-mono mb-2;
+    ul {
+        @apply pl-8;
+        li {
+            @apply relative;
+            &::before {
+                @apply absolute -left-4 text-primary dark:text-dark-primary;
+                content: "* ";
+            }
+        }
     }
 
-    .post-date {
-        @apply text-sm text-zinc-600 dark:text-zinc-300 mb-4;
+    table {
+        @apply w-full my-4;
+        th,
+        td {
+            @apply px-4 py-2 border border-zinc-300 dark:border-zinc-600;
+        }
+        th {
+            @apply bg-zinc-100 dark:bg-zinc-800;
+        }
     }
 
-    .post-preview {
-        @apply mb-8 pb-8 border-b border-dotted border-zinc-200 dark:border-zinc-700;
+    .callout {
+        @apply bg-blue-600 text-white p-4 my-4;
+        a {
+            @apply border-b-2 border-white;
+            &:hover {
+                @apply bg-white text-blue-600;
+            }
+        }
     }
 
-    /* Tag styles */
-    .tag {
-        @apply text-red-600 hover:underline;
-    }
+    .highlight {
+        @apply relative;
+        pre code[class*="language-"]::before {
+            @apply absolute right-4 top-0 px-2 py-1 text-xs uppercase;
+            content: attr(class);
+        }
 
-    /* Read more link */
-    .read-more {
-        @apply text-red-600 hover:underline inline-flex items-center gap-1;
+        /* Language-specific styles */
+        .language-js::before {
+            @apply bg-y-200 text-black;
+            content: "js";
+        }
+        .language-yaml::before {
+            @apply bg-pink-600 text-white;
+            content: "yaml";
+        }
+        .language-bash::before {
+            @apply bg-green-600 text-white;
+            content: "shell";
+        }
+        .language-json::before {
+            @apply bg-blue-400 text-black;
+            content: "json";
+        }
+        .language-python::before {
+            @apply bg-blue-600 text-yellow-300;
+            content: "py";
+        }
+        .language-css::before {
+            @apply bg-cyan-400 text-black;
+            content: "css";
+        }
     }
 }
 
 @layer components {
-    .tag-link {
-        @apply border-b-2 border-primary-light dark:border-primary-dark
-               hover:bg-primary-light dark:hover:bg-primary-dark
-               hover:text-white dark:hover:text-zinc-900
-               px-2 py-1 text-sm font-mono;
+    .post-content {
+        @apply max-w-3xl mx-auto;
+        p {
+            @apply my-4;
+        }
+        img {
+            @apply border-4 border-zinc-200 dark:border-zinc-700 my-4;
+        }
     }
-}
 
-/* Syntax highlighting */
-pre code.hljs {
-    @apply bg-transparent p-0;
+    .tags {
+        @apply flex gap-2 mt-2;
+        a {
+            @apply border-b-2 border-primary dark:border-dark-primary px-2 py-1 text-sm;
+            &:hover {
+                @apply bg-primary text-white dark:bg-dark-primary dark:text-black;
+            }
+        }
+    }
 }
