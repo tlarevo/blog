@@ -12,7 +12,14 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["Fira Sans", "sans-serif"],
-        mono: ["Roboto Mono", "monospace"],
+        mono: [
+          "Monaco",
+          "Roboto Mono",
+          "Consolas",
+          "Liberation Mono",
+          "Courier New",
+          "monospace",
+        ],
         ibm: ["IBM Plex Mono", "monospace"],
       },
       colors: {
