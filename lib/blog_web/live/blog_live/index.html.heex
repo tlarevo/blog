@@ -1,0 +1,23 @@
+<div class="space-y-12">
+  <%= for post <- @posts do %>
+    <article class="space-y-4">
+      <h2 class="text-xl font-mono text-zinc-900 dark:text-zinc-100">
+        <span class="text-primary-light dark:text-primary-dark">#</span>
+        <.link
+          href={~p"/posts/#{post["number"]}"}
+          class="border-b-2 border-primary-light dark:border-primary-dark hover:bg-primary-light dark:hover:bg-primary-dark hover:text-white"
+        >
+          {post["title"]}
+        </.link>
+      </h2>
+      <%!-- <time class="block text-sm text-zinc-500">{post.date}</time>
+      <p class="text-zinc-600 dark:text-zinc-300">{post.excerpt}</p> --%>
+      <.link
+        href={~p"/posts/#{post["number"]}"}
+        class="inline-block text-zinc-600 dark:text-zinc-300 border-b-2 border-primary-light dark:border-primary-dark hover:text-zinc-900 dark:hover:text-white"
+      >
+        Read more →
+      </.link>
+    </article>
+  <% end %>
+</div>
