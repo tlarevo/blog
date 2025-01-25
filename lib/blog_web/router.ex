@@ -10,14 +10,14 @@ defmodule BlogWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", BlogWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", BlogLive.Index, :index
+    live "/posts", BlogLive.PostList, :index
+    live "/posts/:id", BlogLive.Post, :show
+    live "/about", BlogLive.About, :index
+    live "/tags", BlogLive.Tags, :index
   end
 
   # Other scopes may use custom stacks.

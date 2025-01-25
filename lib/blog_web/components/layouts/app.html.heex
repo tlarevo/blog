@@ -1,32 +1,68 @@
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= Application.spec(:phoenix, :vsn) %>
-      </p>
-    </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
-      </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
-      </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
+<div class="flex flex-col items-center">
+  <div role="centered-layout" class="w-full sm:w-[80%] md:w-[75%] lg:w-[60%] xl:w-[40%]">
+    <header class="px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-8">
+        <div role="title" class="text-left">
+          <.link
+            href="/"
+            class="text-2xl font-mono text-zinc-900 dark:text-white hover:no-underline"
+          >
+            Archie
+          </.link>
+          <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Minimal and Clean blog theme for Hugo
+          </p>
+        </div>
+        <nav class="flex items-center gap-6 mt-4 font-mono text-sm text-right">
+          <.link href="/" class="text-zinc-900 dark:text-white hover:underline">
+            Home
+          </.link>
+          <.link href="/posts" class="text-zinc-900 dark:text-white hover:underline">
+            All posts
+          </.link>
+          <.link href="/about" class="text-zinc-900 dark:text-white hover:underline">
+            About
+          </.link>
+          <.link href="/tags" class="text-zinc-900 dark:text-white hover:underline">
+            Tags
+          </.link>
+        </nav>
+      </div>
+    </header>
+    <main class="px-4 py-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl">
+        <.flash_group flash={@flash} />
+        {@inner_content}
+      </div>
+    </main>
+    <footer class="px-4 sm:px-6 lg:px-8 mt-16">
+      <div class="flex items-center justify-center gap-4 py-6 text-sm border-t border-dotted border-zinc-200 dark:border-zinc-700">
+        <.link
+          href="https://github.com/username"
+          class="text-zinc-900 dark:text-white hover:underline"
+        >
+          GitHub
+        </.link>
+        |
+        <.link href="/feed.xml" class="text-zinc-900 dark:text-white hover:underline">
+          RSS
+        </.link>
+        |
+        <span class="text-zinc-600 dark:text-zinc-400">
+          © {DateTime.utc_now().year} • Athul
+        </span>
+        |
+        <.link
+          href="https://github.com/athul/archie"
+          class="text-zinc-900 dark:text-white hover:underline"
+        >
+          Archie Theme
+        </.link>
+        |
+        <span class="text-zinc-600 dark:text-zinc-400">
+          Built with Hugo
+        </span>
+      </div>
+    </footer>
   </div>
-</header>
-<main class="px-4 py-20 sm:px-6 lg:px-8">
-  <div class="mx-auto max-w-2xl">
-    <.flash_group flash={@flash} />
-    <%= @inner_content %>
-  </div>
-</main>
+</div>
