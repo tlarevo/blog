@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
     <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "Blog" %>
+      {assigns[:page_title] || "Blog"}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-white antialiased">
-    <%= @inner_content %>
+  <body class="bg-white antialiased dark:bg-zinc-900">
+    {@inner_content}
   </body>
 </html>
