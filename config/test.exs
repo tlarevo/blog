@@ -10,6 +10,8 @@ config :blog, BlogWeb.Endpoint,
 # In test we don't send emails.
 config :blog, Blog.Mailer, adapter: Swoosh.Adapters.Test
 
+config :blog, blog_source: Blog.TestSource
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 

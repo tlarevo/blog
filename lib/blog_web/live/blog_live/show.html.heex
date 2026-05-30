@@ -1,0 +1,28 @@
+<Layouts.app flash={@flash}>
+  <%= if @post do %>
+    <article>
+      <div class="title">
+        <h1 class="title">{@post["title"]}</h1>
+        <div class="meta">
+          Posted on {BlogWeb.BlogLive.Helpers.format_date(@post["createdAt"])}
+        </div>
+      </div>
+
+      <section class="body">
+        {BlogWeb.Markdown.to_html(@post["body"])}
+      </section>
+
+      <p>
+        <.link navigate={~p"/posts"}>Back to posts</.link>
+      </p>
+    </article>
+  <% else %>
+    <section class="notice">
+      <h1>Post unavailable</h1>
+      <p>The post could not be loaded.</p>
+      <p>
+        <.link navigate={~p"/posts"}>Back to posts</.link>
+      </p>
+    </section>
+  <% end %>
+</Layouts.app>

@@ -1,23 +1,23 @@
-<div class="space-y-12">
-  <%= for post <- @posts do %>
-    <article class="space-y-4">
-      <h2 class="text-xl font-mono text-zinc-900 dark:text-zinc-100">
-        <span class="text-primary-light dark:text-primary-dark">#</span>
-        <.link
-          href={~p"/posts/#{post["number"]}"}
-          class="border-b-2 border-primary-light dark:border-primary-dark hover:bg-primary-light dark:hover:bg-primary-dark hover:text-white"
-        >
-          {post["title"]}
-        </.link>
-      </h2>
-      <%!-- <time class="block text-sm text-zinc-500">{post.date}</time>
-      <p class="text-zinc-600 dark:text-zinc-300">{post.excerpt}</p> --%>
-      <.link
-        href={~p"/posts/#{post["number"]}"}
-        class="inline-block text-zinc-600 dark:text-zinc-300 border-b-2 border-primary-light dark:border-primary-dark hover:text-zinc-900 dark:hover:text-white"
-      >
-        Read more →
-      </.link>
-    </article>
+<Layouts.app flash={@flash}>
+  <h1 class="page-title">All articles</h1>
+
+  <%= if @load_error do %>
+    <section class="notice">
+      <strong>Posts unavailable</strong>
+      <p>The post list could not be loaded.</p>
+    </section>
+  <% else %>
+    <%= if Enum.empty?(@posts) do %>
+      <p class="meta">No posts have been published yet.</p>
+    <% else %>
+      <ul class="posts">
+        <%= for post <- @posts do %>
+          <li class="post">
+            <.link navigate={~p"/posts/#{post["number"]}"}>{post["title"]}</.link>
+            <span class="meta">{BlogWeb.BlogLive.Helpers.format_date(post["createdAt"])}</span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
-</div>
+</Layouts.app>

@@ -51,8 +51,7 @@ defmodule BlogWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {BlogWeb.Layouts, :app}
+      use Phoenix.LiveView
 
       unquote(html_helpers())
     end
@@ -86,6 +85,8 @@ defmodule BlogWeb do
       # Core UI components and translation
       import BlogWeb.CoreComponents
       import BlogWeb.Gettext
+
+      alias BlogWeb.Layouts
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
