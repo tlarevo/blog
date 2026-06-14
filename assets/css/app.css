@@ -23,10 +23,12 @@
   --content-max-width: 800px;
   --content-padding: 1ch;
   --border-radius: 5px;
-  --font-size-base: 15px;
-  --line-height-base: 1.6;
-  --line-height-content: 1.5;
-  --font-display: "Press Start 2P", "Roboto Mono", monospace;
+  --font-size-base: 16px;
+  --line-height-base: 1.8;
+  --line-height-content: 1.7;
+  --font-display: "Press Start 2P", "Silkscreen", monospace;
+  --font-body: "Pixelify Sans", "Silkscreen", sans-serif;
+  --font-mono: "Silkscreen", "Press Start 2P", monospace;
   color-scheme: light;
 }
 
@@ -66,7 +68,7 @@
 
 html {
   color: var(--color-text);
-  font-family: "Roboto Mono", "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: var(--font-size-base);
   font-weight: 400;
   line-height: var(--line-height-base);
@@ -89,9 +91,8 @@ body {
   background: var(--color-primary);
   color: #ffffff;
 }
-
 p {
-  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
   line-height: var(--line-height-content);
   margin-block: 0.5em;
 }
@@ -127,6 +128,7 @@ hr {
 blockquote {
   border-inline-start: 3px solid var(--color-border);
   color: var(--color-text-muted);
+  font-family: var(--font-body);
   font-style: italic;
   margin: 0;
   padding-inline-start: 1em;
@@ -153,6 +155,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-display);
   font-size: 1.2rem;
   line-height: 1.2;
   margin-block: 2em 0.5em;
@@ -181,6 +184,7 @@ h4::before {
 code {
   background-color: var(--color-background-code);
   border-radius: 3px;
+  font-family: var(--font-mono);
   font-size: 0.9em;
   padding: 0.1em 0.2em;
 }
@@ -246,7 +250,7 @@ nav {
 }
 
 nav a {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 400;
 }
 
@@ -270,7 +274,7 @@ footer {
     )
     4;
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   line-height: 1.8;
   display: flex;
   flex-wrap: wrap;
@@ -290,13 +294,15 @@ footer {
 .page-title {
   font-family: var(--font-display);
   font-size: 1.3rem;
+  letter-spacing: 0.05em;
   line-height: 1.4;
   margin-block: 2em 1em;
 }
 
 .meta {
   color: var(--color-text-meta);
-  font-size: 0.9em;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
 }
 
 .posts {
@@ -318,6 +324,7 @@ footer {
 h1.title {
   font-family: var(--font-display);
   font-size: 1.3rem;
+  letter-spacing: 0.05em;
   line-height: 1.4;
   margin-block-end: 0;
 }
