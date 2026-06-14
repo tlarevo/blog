@@ -9,13 +9,23 @@ defmodule BlogWeb.BlogLive.Show do
   defp load_post(socket, number) do
     case blog_source().fetch_post(number) do
       {:ok, post} ->
-        assign(socket, post: post, load_error: nil, page_title: post["title"])
+        assign(socket,
+          post: post,
+          load_error: nil,
+          page_title: post["title"],
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+        )
 
       {:error, reason} ->
         assign(socket, post: nil, load_error: reason, page_title: "Post unavailable")
 
       post when is_map(post) ->
-        assign(socket, post: post, load_error: nil, page_title: post["title"])
+        assign(socket,
+          post: post,
+          load_error: nil,
+          page_title: post["title"],
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+        )
 
       _unexpected ->
         assign(socket,

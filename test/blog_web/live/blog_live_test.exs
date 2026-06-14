@@ -23,6 +23,7 @@ defmodule BlogWeb.BlogLiveTest do
 
     assert html =~ "Shipping Phoenix without fear"
     assert html =~ "Posted on May 20, 2026"
+    assert html =~ "min read"
     assert html =~ "<strong>strong text</strong>"
     assert html =~ ~s(href="https://example.com")
     assert html =~ "safe link"

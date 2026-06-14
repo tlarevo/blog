@@ -42,3 +42,64 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// --- Theme toggle (light/dark), persisted to localStorage ---
+const THEME_GLYPHS = {dark: "[ sun ]", light: "[ moon ]"}
+
+function currentTheme() {
+  const forced = document.documentElement.getAttribute("data-theme")
+  if (forced === "dark" || forced === "light") return forced
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+}
+
+function renderToggle() {
+  const btn = document.getElementById("theme-toggle")
+  if (!btn) return
+  btn.textContent = THEME_GLYPHS[currentTheme()]
+}
+
+function toggleTheme() {
+  const next = currentTheme() === "dark" ? "light" : "dark"
+  document.documentElement.setAttribute("data-theme", next)
+  try {
+    localStorage.setItem("theme", next)
+  } catch (e) {}
+  renderToggle()
+}
+
+document.addEventListener("click", e => {
+  if (e.target.closest("#theme-toggle")) toggleTheme()
+})
+
+// --- Active nav marker ---
+function markActiveNav() {
+  const path = window.location.pathname
+  document.querySelectorAll("nav a").forEach(a => {
+    const href = a.getAttribute("href")
+    if (!href) return
+    if (href === path || (href !== "/" && path.startsWith(href))) {
+      a.setAttribute("aria-current", "page")
+    } else {
+      a.removeAttribute("aria-current")
+    }
+  })
+}
+
+// --- Reading progress bar (post pages only) ---
+function updateReadingProgress() {
+  const bar = document.getElementById("reading-progress")
+  if (!bar) return
+  const doc = document.documentElement
+  const max = doc.scrollHeight - doc.clientHeight
+  const ratio = max > 0 ? Math.min(doc.scrollTop / max, 1) : 0
+  bar.style.inlineSize = (ratio * 100) + "%"
+}
+
+function initUi() {
+  renderToggle()
+  markActiveNav()
+  updateReadingProgress()
+}
+
+window.addEventListener("scroll", updateReadingProgress, {passive: true})
+window.addEventListener("DOMContentLoaded", initUi)
+window.addEventListener("phx:page-loading-stop", initUi)

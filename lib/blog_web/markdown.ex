@@ -11,6 +11,11 @@ defmodule BlogWeb.Markdown do
         tasklist: true
       ],
       render: [unsafe: true],
+      syntax_highlight: [
+        formatter:
+          {:html_multi_themes,
+           themes: [light: "github_light", dark: "dracula"], default_theme: "light"}
+      ],
       sanitize: MDEx.Document.default_sanitize_options()
     )
     |> Phoenix.HTML.raw()

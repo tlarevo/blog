@@ -21,6 +21,19 @@ defmodule BlogWeb.BlogLive.Helpers do
     end
   end
 
+  @words_per_minute 200
+
+  def reading_time(nil), do: nil
+
+  def reading_time(body) when is_binary(body) do
+    words =
+      body
+      |> String.split(~r/\s+/, trim: true)
+      |> length()
+
+    max(div(words + @words_per_minute - 1, @words_per_minute), 1)
+  end
+
   defp format_date_parts(year, month, day) do
     month_name = Enum.at(@months, month - 1)
     "#{month_name} #{day}, #{year}"

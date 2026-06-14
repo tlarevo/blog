@@ -1,10 +1,14 @@
 <Layouts.app flash={@flash}>
   <%= if @post do %>
+    <div id="reading-progress" aria-hidden="true"></div>
     <article>
       <div class="title">
         <h1 class="title">{@post["title"]}</h1>
         <div class="meta">
           Posted on {BlogWeb.BlogLive.Helpers.format_date(@post["createdAt"])}
+          <%= if @reading_time do %>
+            <span class="meta">· {@reading_time} min read</span>
+          <% end %>
         </div>
       </div>
 
