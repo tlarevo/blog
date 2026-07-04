@@ -28,7 +28,9 @@ defmodule Blog.TestSource do
     """
   }
 
-  def fetch_posts, do: {:ok, @posts}
+  def fetch_posts(_count \\ 10, _attr \\ [:id, :number, :title, :createdAt], _after_cursor \\ nil) do
+    {:ok, %{posts: @posts, has_next_page: false, end_cursor: nil}}
+  end
 
   def fetch_post(number) when number in [1, "1"], do: {:ok, @post}
   def fetch_post(_number), do: {:error, :not_found}

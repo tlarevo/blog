@@ -18,6 +18,15 @@
           </li>
         <% end %>
       </ul>
+      <%= if @has_next_page do %>
+        <button
+          class="load-more"
+          phx-click="load-more"
+          phx-disable-with="Loading…"
+        >
+          Load more
+        </button>
+      <% end %>
     <% end %>
   <% end %>
 </Layouts.app>
