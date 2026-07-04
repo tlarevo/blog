@@ -10,7 +10,7 @@ kill_signal = 'SIGTERM'
 [build]
 
 [env]
-  PHX_HOST = 'tlarevo-blog.fly.dev'
+  PHX_HOST = 'tlarevo.me'
   PORT = '8080'
 
 [http_service]

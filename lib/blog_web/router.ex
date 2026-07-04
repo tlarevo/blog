@@ -2,6 +2,7 @@ defmodule BlogWeb.Router do
   use BlogWeb, :router
 
   pipeline :browser do
+    plug :redirect_www
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
@@ -41,6 +42,20 @@ defmodule BlogWeb.Router do
 
       live_dashboard "/dashboard", metrics: BlogWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
+  defp redirect_www(conn, _opts) do
+    if conn.host == "www.tlarevo.me" do
+      query = if conn.query_string != "", do: "?#{conn.query_string}", else: ""
+      url = "https://tlarevo.me#{conn.request_path}#{query}"
+
+      conn
+      |> Plug.Conn.put_status(301)
+      |> Phoenix.Controller.redirect(external: url)
+      |> Plug.Conn.halt()
+    else
+      conn
     end
   end
 end
