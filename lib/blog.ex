@@ -138,7 +138,8 @@ defmodule Blog do
 
   defp run_query(query, token) do
     query_string = Cognac.query(query, output: :binary)
-    request = Req.new(url: @github_graphql_url, headers: [authorization: "Bearer #{token}"])
+    github_url = Application.get_env(:blog, :github_url, @github_graphql_url)
+    request = Req.new(url: github_url, headers: [authorization: "Bearer #{token}"])
 
     request
     |> AbsintheClient.attach()
