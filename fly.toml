@@ -25,6 +25,12 @@ kill_signal = 'SIGTERM'
     type = 'connections'
     hard_limit = 1000
     soft_limit = 1000
+  [http_service.checks]
+    [http_service.checks.health]
+      interval = "10s"
+      timeout = "2s"
+      method = "GET"
+      path = "/health"
 
 [[vm]]
   memory = '256mb'
