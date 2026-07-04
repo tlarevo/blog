@@ -12,7 +12,7 @@ defmodule BlogWeb.BlogLive.Show do
         assign(socket,
           post: post,
           load_error: nil,
-          page_title: post["title"],
+          page_title: post["title"] || "Post",
           reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
         )
 
@@ -23,7 +23,7 @@ defmodule BlogWeb.BlogLive.Show do
         assign(socket,
           post: post,
           load_error: nil,
-          page_title: post["title"],
+          page_title: post["title"] || "Post",
           reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
         )
 

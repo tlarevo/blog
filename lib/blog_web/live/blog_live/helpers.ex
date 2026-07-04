@@ -35,7 +35,7 @@ defmodule BlogWeb.BlogLive.Helpers do
   end
 
   defp format_date_parts(year, month, day) do
-    month_name = Enum.at(@months, month - 1)
+    month_name = Enum.at(@months, month - 1) || "Unknown"
     "#{month_name} #{day}, #{year}"
   end
 end
