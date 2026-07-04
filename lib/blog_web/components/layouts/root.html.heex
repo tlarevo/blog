@@ -7,6 +7,14 @@
     <.live_title suffix=" · Blog">
       {assigns[:page_title] || "Blog"}
     </.live_title>
+    <meta name="description" content={assigns[:meta_description] || "Blog by Tharindu Abeydeera"} />
+    <meta property="og:title" content={assigns[:page_title] || "Blog"} />
+    <meta property="og:description" content={assigns[:meta_description] || "Blog by Tharindu Abeydeera"} />
+    <meta property="og:type" content={assigns[:og_type] || "website"} />
+    <meta property="og:url" content={"https://tlarevo.me#{assigns[:request_path] || "/"}"} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={assigns[:page_title] || "Blog"} />
+    <meta name="twitter:description" content={assigns[:meta_description] || "Blog by Tharindu Abeydeera"} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

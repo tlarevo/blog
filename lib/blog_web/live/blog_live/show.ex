@@ -13,7 +13,10 @@ defmodule BlogWeb.BlogLive.Show do
           post: post,
           load_error: nil,
           page_title: post["title"] || "Post",
-          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"]),
+          meta_description: BlogWeb.BlogLive.Helpers.strip_markdown(post["body"]),
+          og_type: "article",
+          request_path: "/posts/#{number}"
         )
 
       {:error, reason} ->
@@ -24,7 +27,10 @@ defmodule BlogWeb.BlogLive.Show do
           post: post,
           load_error: nil,
           page_title: post["title"] || "Post",
-          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"]),
+          meta_description: BlogWeb.BlogLive.Helpers.strip_markdown(post["body"]),
+          og_type: "article",
+          request_path: "/posts/#{number}"
         )
 
       _unexpected ->

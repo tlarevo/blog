@@ -21,6 +21,9 @@ defmodule BlogWeb.Router do
     live "/", BlogLive.Index, :index
     live "/posts", BlogLive.Index, :index
     live "/posts/:number", BlogLive.Show, :show
+
+    get "/feed.xml", FeedController, :index
+    get "/sitemap.xml", SitemapController, :index
   end
 
   # Other scopes may use custom stacks.

@@ -45,7 +45,9 @@ defmodule BlogWeb.BlogLive.Index do
           has_next_page: has_next,
           end_cursor: cursor,
           load_error: nil,
-          page_title: "All articles"
+          page_title: "All articles",
+          meta_description: "All articles on tlarevo.me",
+          request_path: "/"
         )
 
       {:error, reason} ->

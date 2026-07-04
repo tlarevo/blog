@@ -11,6 +11,25 @@
           <% end %>
         </div>
       </div>
+      <script type="application/ld+json">
+        {Jason.encode!(%{
+          "@context" => "https://schema.org",
+          "@type" => "BlogPosting",
+          "headline" => @post["title"],
+          "datePublished" => @post["createdAt"],
+          "author" => %{
+            "@type" => "Person",
+            "name" => "Tharindu Abeydeera",
+            "url" => "https://github.com/tlarevo"
+          },
+          "publisher" => %{
+            "@type" => "Person",
+            "name" => "Tharindu Abeydeera"
+          },
+          "url" => "https://tlarevo.me/posts/#{@post["number"]}"
+        })}
+      </script>
+
 
       <section class="body">
         {BlogWeb.Markdown.to_html(@post["body"])}

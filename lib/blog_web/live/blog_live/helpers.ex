@@ -33,6 +33,34 @@ defmodule BlogWeb.BlogLive.Helpers do
 
     max(div(words + @words_per_minute - 1, @words_per_minute), 1)
   end
+  @doc """
+  Strips markdown syntax from a string, returning plain text truncated to 160 characters.
+  Used for meta description tags.
+  """
+  def strip_markdown(nil), do: nil
+
+  def strip_markdown(body) when is_binary(body) do
+    body
+    |> String.replace(~r/```[\s\S]*?```/, "")
+    |> String.replace(~r/`[^`]*`/, "")
+    |> String.replace(~r/!\[([^\]]*)\]\([^)]*\)/, "\\1")
+    |> String.replace(~r/\[([^\]]*)\]\([^)]*\)/, "\\1")
+    |> String.replace(~r/^#+\s+/, "")
+    |> String.replace(~r/\*\*([^*]*)\*\*/, "\\1")
+    |> String.replace(~r/\*([^*]*)\*/, "\\1")
+    |> String.replace(~r/~~([^~]*)~~/, "\\1")
+    |> String.replace(~r/^>\s+/, "")
+    |> String.replace(~r/^[-*+]\s+/, "")
+    |> String.replace(~r/^\d+\.\s+/, "")
+    |> String.replace(~r/^---+$/, "")
+    |> String.replace(~r/<script[\s\S]*?<\/script>/, "")
+    |> String.replace(~r/<style[\s\S]*?<\/style>/, "")
+    |> String.replace(~r/<[^>]*>/, "")
+    |> String.replace(~r/\n{2,}/, " ")
+    |> String.replace(~r/\s+/, " ")
+    |> String.trim()
+    |> String.slice(0, 160)
+  end
 
   defp format_date_parts(year, month, day) do
     month_name = Enum.at(@months, month - 1) || "Unknown"
