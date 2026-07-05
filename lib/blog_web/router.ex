@@ -19,6 +19,10 @@ defmodule BlogWeb.Router do
     plug :redirect_www
   end
 
+  scope "/" do
+    get "/health", BlogWeb.HealthController, :index
+  end
+
   scope "/", BlogWeb do
     pipe_through :browser
 
