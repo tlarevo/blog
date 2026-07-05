@@ -69,7 +69,3 @@ Requires the [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/) and an auth
 ```bash
 mix test
 ```
-
-## License
-
-MIT
