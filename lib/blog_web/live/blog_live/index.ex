@@ -9,8 +9,9 @@ defmodule BlogWeb.BlogLive.Index do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  def handle_params(params, url, socket) do
+    path = URI.parse(url).path || "/"
+    {:noreply, socket |> assign(request_path: path) |> apply_action(socket.assigns.live_action, params)}
   end
 
   @impl true
@@ -45,7 +46,9 @@ defmodule BlogWeb.BlogLive.Index do
           has_next_page: has_next,
           end_cursor: cursor,
           load_error: nil,
-          page_title: "All articles"
+          page_title: "All articles",
+          meta_description: "All articles on tlarevo.me",
+          request_path: "/"
         )
 
       {:error, reason} ->

@@ -11,6 +11,10 @@
           <% end %>
         </div>
       </div>
+      <script type="application/ld+json">
+        {BlogWeb.BlogLive.Show.json_ld(@post)}
+      </script>
+
 
       <section class="body">
         {BlogWeb.Markdown.to_html(@post["body"])}

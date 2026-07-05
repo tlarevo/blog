@@ -15,12 +15,23 @@ defmodule BlogWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :xml do
+    plug :redirect_www
+  end
+
   scope "/", BlogWeb do
     pipe_through :browser
 
     live "/", BlogLive.Index, :index
     live "/posts", BlogLive.Index, :index
     live "/posts/:number", BlogLive.Show, :show
+  end
+
+  scope "/", BlogWeb do
+    pipe_through :xml
+
+    get "/feed.xml", FeedController, :index
+    get "/sitemap.xml", SitemapController, :index
   end
 
   # Other scopes may use custom stacks.

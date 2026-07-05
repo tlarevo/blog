@@ -13,7 +13,10 @@ defmodule BlogWeb.BlogLive.Show do
           post: post,
           load_error: nil,
           page_title: post["title"] || "Post",
-          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"]),
+          meta_description: BlogWeb.BlogLive.Helpers.strip_markdown(post["body"]),
+          og_type: "article",
+          request_path: "/posts/#{number}"
         )
 
       {:error, reason} ->
@@ -24,7 +27,10 @@ defmodule BlogWeb.BlogLive.Show do
           post: post,
           load_error: nil,
           page_title: post["title"] || "Post",
-          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"])
+          reading_time: BlogWeb.BlogLive.Helpers.reading_time(post["body"]),
+          meta_description: BlogWeb.BlogLive.Helpers.strip_markdown(post["body"]),
+          og_type: "article",
+          request_path: "/posts/#{number}"
         )
 
       _unexpected ->
@@ -34,6 +40,30 @@ defmodule BlogWeb.BlogLive.Show do
           page_title: "Post unavailable"
         )
     end
+  end
+
+  def json_ld(post) do
+    json =
+      %{
+        "@context" => "https://schema.org",
+        "@type" => "BlogPosting",
+        "headline" => post["title"],
+        "datePublished" => post["createdAt"],
+        "author" => %{
+          "@type" => "Person",
+          "name" => "Tharindu Abeydeera",
+          "url" => "https://github.com/tlarevo"
+        },
+        "publisher" => %{
+          "@type" => "Person",
+          "name" => "Tharindu Abeydeera"
+        },
+        "url" => "https://tlarevo.me/posts/#{post["number"]}"
+      }
+      |> Jason.encode!()
+      |> String.replace(~r{</script>}i, "<\\/script>")
+
+    Phoenix.HTML.raw(json)
   end
 
   defp blog_source, do: Application.get_env(:blog, :blog_source, Blog)
