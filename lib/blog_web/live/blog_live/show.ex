@@ -42,5 +42,29 @@ defmodule BlogWeb.BlogLive.Show do
     end
   end
 
+  def json_ld(post) do
+    json =
+      %{
+        "@context" => "https://schema.org",
+        "@type" => "BlogPosting",
+        "headline" => post["title"],
+        "datePublished" => post["createdAt"],
+        "author" => %{
+          "@type" => "Person",
+          "name" => "Tharindu Abeydeera",
+          "url" => "https://github.com/tlarevo"
+        },
+        "publisher" => %{
+          "@type" => "Person",
+          "name" => "Tharindu Abeydeera"
+        },
+        "url" => "https://tlarevo.me/posts/#{post["number"]}"
+      }
+      |> Jason.encode!()
+      |> String.replace(~r{</script>}i, "<\\/script>")
+
+    Phoenix.HTML.raw(json)
+  end
+
   defp blog_source, do: Application.get_env(:blog, :blog_source, Blog)
 end

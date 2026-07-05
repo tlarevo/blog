@@ -6,7 +6,7 @@ defmodule BlogWeb.FeedController do
 
   def index(conn, _params) do
     posts =
-      case Blog.fetch_posts(50) do
+      case blog_source().fetch_posts(50) do
         {:ok, %{posts: posts}} -> posts
         _error -> []
       end
@@ -18,8 +18,17 @@ defmodule BlogWeb.FeedController do
     |> send_resp(200, xml)
   end
 
-  defp build_feed(posts) do
-    updated = List.first(posts)["createdAt"] || (DateTime.utc_now() |> DateTime.to_iso8601())
+  defp build_feed([]) do
+    updated = DateTime.utc_now() |> DateTime.to_iso8601()
+    build_feed_xml([], updated)
+  end
+
+  defp build_feed([first | _] = posts) do
+    updated = first["createdAt"] || (DateTime.utc_now() |> DateTime.to_iso8601())
+    build_feed_xml(posts, updated)
+  end
+
+  defp build_feed_xml(posts, updated) do
 
     entries =
       posts
@@ -66,4 +75,6 @@ defmodule BlogWeb.FeedController do
   end
 
   defp xml_escape(_), do: ""
+  defp blog_source, do: Application.get_env(:blog, :blog_source, Blog)
+
 end

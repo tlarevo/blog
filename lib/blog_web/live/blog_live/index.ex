@@ -9,8 +9,9 @@ defmodule BlogWeb.BlogLive.Index do
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  def handle_params(params, url, socket) do
+    path = URI.parse(url).path || "/"
+    {:noreply, socket |> assign(request_path: path) |> apply_action(socket.assigns.live_action, params)}
   end
 
   @impl true

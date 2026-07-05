@@ -5,7 +5,7 @@ defmodule BlogWeb.SitemapController do
 
   def index(conn, _params) do
     posts =
-      case Blog.fetch_posts(100) do
+      case blog_source().fetch_posts(100) do
         {:ok, %{posts: posts}} -> posts
         _error -> []
       end
@@ -39,8 +39,12 @@ defmodule BlogWeb.SitemapController do
 
   defp build_post_url(post) do
     number = post["number"]
-    lastmod = post["createdAt"] || ""
+    lastmod = post["createdAt"]
 
-    ~s(<url><loc>#{@site_url}/posts/#{number}</loc><lastmod>#{lastmod}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>)
+    lastmod_tag = if lastmod, do: ~s(<lastmod>#{lastmod}</lastmod>), else: ""
+
+    ~s(<url><loc>#{@site_url}/posts/#{number}</loc>#{lastmod_tag}<changefreq>weekly</changefreq><priority>0.8</priority></url>)
   end
+
+  defp blog_source, do: Application.get_env(:blog, :blog_source, Blog)
 end
