@@ -24,6 +24,7 @@ defmodule BlogWeb.BlogLive.HelpersTest do
       assert Helpers.reading_time(body) == 3
     end
   end
+
   describe "strip_markdown/1" do
     test "returns nil for nil" do
       assert Helpers.strip_markdown(nil) == nil
@@ -75,5 +76,32 @@ defmodule BlogWeb.BlogLive.HelpersTest do
       assert Helpers.strip_markdown("") == ""
     end
   end
-end
 
+  describe "format_date/1" do
+    test "returns nil for nil" do
+      assert Helpers.format_date(nil) == nil
+    end
+
+    test "formats a Date struct" do
+      date = ~D[2026-01-15]
+      assert Helpers.format_date(date) == "January 15, 2026"
+    end
+
+    test "formats a DateTime struct by converting to date first" do
+      {:ok, datetime, _} = DateTime.from_iso8601("2026-01-15T12:30:00Z")
+      assert Helpers.format_date(datetime) == "January 15, 2026"
+    end
+
+    test "formats an ISO 8601 string" do
+      assert Helpers.format_date("2026-01-15T12:30:00Z") == "January 15, 2026"
+    end
+
+    test "returns the original string for an invalid ISO string" do
+      assert Helpers.format_date("not-a-date") == "not-a-date"
+    end
+
+    test "returns the original string for an empty string" do
+      assert Helpers.format_date("") == ""
+    end
+  end
+end
