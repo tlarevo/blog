@@ -86,6 +86,23 @@ body {
   background-color: var(--color-background);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5em 1em;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  text-decoration: none;
+  border-block-end: none;
+}
+
+.skip-to-content:focus {
+  left: 1em;
+  top: 1em;
+}
 
 ::selection {
   background: var(--color-primary);
@@ -339,6 +356,44 @@ footer {
   color: #ffffff;
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+#post-search {
+  border: 2px solid var(--color-border);
+  border-radius: 0;
+  background: var(--color-background);
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  margin-block: 1rem;
+  padding: 0.5em 1em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  inline-size: 100%;
+}
+
+#post-search:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-background-code) 25%,
+    var(--color-background-pre) 50%,
+    var(--color-background-code) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--border-radius);
+  block-size: 1.5rem;
+  margin-block: 0.75rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .title h1,

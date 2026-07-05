@@ -23,7 +23,7 @@ defmodule BlogWeb.BlogLive.Index do
         {:noreply,
          socket
          |> update(:posts, &(&1 ++ new_posts))
-         |> assign(has_next_page: has_next, end_cursor: new_cursor)}
+         |> then(fn s -> assign(s, posts_json: Jason.encode!(s.assigns.posts), has_next_page: has_next, end_cursor: new_cursor) end)}
 
       {:error, _reason} ->
         {:noreply, assign(socket, load_error: :load_more_failed)}
@@ -43,6 +43,7 @@ defmodule BlogWeb.BlogLive.Index do
       {:ok, %{posts: posts, has_next_page: has_next, end_cursor: cursor}} ->
         assign(socket,
           posts: posts,
+          posts_json: Jason.encode!(posts),
           has_next_page: has_next,
           end_cursor: cursor,
           load_error: nil,
@@ -54,6 +55,7 @@ defmodule BlogWeb.BlogLive.Index do
       {:error, reason} ->
         assign(socket,
           posts: [],
+          posts_json: "[]",
           has_next_page: false,
           end_cursor: nil,
           load_error: reason,
@@ -63,6 +65,7 @@ defmodule BlogWeb.BlogLive.Index do
       posts when is_list(posts) ->
         assign(socket,
           posts: posts,
+          posts_json: Jason.encode!(posts),
           has_next_page: false,
           end_cursor: nil,
           load_error: nil,
@@ -72,6 +75,7 @@ defmodule BlogWeb.BlogLive.Index do
       _unexpected ->
         assign(socket,
           posts: [],
+          posts_json: "[]",
           has_next_page: false,
           end_cursor: nil,
           load_error: :unexpected_response,

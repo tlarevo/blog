@@ -54,7 +54,9 @@ function currentTheme() {
 function renderToggle() {
   const btn = document.getElementById("theme-toggle")
   if (!btn) return
-  btn.textContent = THEME_GLYPHS[currentTheme()]
+  const isDark = currentTheme() === "dark"
+  btn.textContent = isDark ? "[ sun ]" : "[ moon ]"
+  btn.setAttribute("aria-pressed", String(isDark))
 }
 
 function toggleTheme() {
@@ -76,7 +78,7 @@ function markActiveNav() {
   document.querySelectorAll("nav a").forEach(a => {
     const href = a.getAttribute("href")
     if (!href) return
-    if (href === path || (href !== "/" && path.startsWith(href))) {
+    if (href === path || (path === "/" && href === "/") || (path === "/posts" && href === "/posts")) {
       a.setAttribute("aria-current", "page")
     } else {
       a.removeAttribute("aria-current")
@@ -103,3 +105,24 @@ function initUi() {
 window.addEventListener("scroll", updateReadingProgress, {passive: true})
 window.addEventListener("DOMContentLoaded", initUi)
 window.addEventListener("phx:page-loading-stop", initUi)
+
+// --- Client-side post search ---
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("post-search")
+  if (!searchInput) return
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase()
+    const dataEl = document.getElementById("posts-data")
+    const posts = dataEl ? JSON.parse(dataEl.textContent || "[]") : []
+
+    document.querySelectorAll("ul.posts > li.post").forEach((li, i) => {
+      if (!query) {
+        li.style.display = ""
+        return
+      }
+      const title = (posts[i] && posts[i].title || "").toLowerCase()
+      li.style.display = title.includes(query) ? "" : "none"
+    })
+  })
+})

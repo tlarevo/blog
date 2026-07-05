@@ -12,7 +12,7 @@
 
   <.flash_group flash={@flash} />
 
-  <main>
+  <main id="main-content">
     <%= if assigns[:inner_block] do %>
       {render_slot(@inner_block)}
     <% else %>

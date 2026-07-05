@@ -7,6 +7,13 @@
       <p>The post list could not be loaded.</p>
     </section>
   <% else %>
+    <input
+      type="search"
+      id="post-search"
+      placeholder="Search posts…"
+      aria-label="Search posts"
+      autocomplete="off"
+    />
     <%= if Enum.empty?(@posts) do %>
       <p class="meta">No posts have been published yet.</p>
     <% else %>
@@ -29,4 +36,6 @@
       <% end %>
     <% end %>
   <% end %>
+
+  <script id="posts-data" type="application/json">{@posts_json}</script>
 </Layouts.app>
