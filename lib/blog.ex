@@ -56,6 +56,27 @@ defmodule Blog do
     end
   end
 
+  @doc """
+  Derives the available tag set from discussion labels already fetched.
+
+  Accepts a list of fetched discussion maps (each optionally carrying a
+  `"labels"` entry) and/or raw label entries (`%{"name" => name}` maps or
+  plain name strings). Nested `%{"nodes" => labels}` collections are
+  unwrapped. Returns a deterministic (sorted) list of distinct, non-empty
+  label names; empty, blank, and `nil` labels are dropped.
+
+  Pure function: performs no network requests and touches no cache.
+  """
+  @spec available_tags([map() | String.t()]) :: [String.t()]
+  def available_tags(entries) when is_list(entries) do
+    entries
+    |> Enum.flat_map(&label_names/1)
+    |> Enum.map(&normalize_tag/1)
+    |> Enum.reject(&is_nil/1)
+    |> Enum.uniq()
+    |> Enum.sort()
+  end
+
   # ── Internal ──────────────────────────────────────────────────
 
   defp do_fetch_posts(count, attr, after_cursor) do
@@ -194,4 +215,25 @@ defmodule Blog do
 
   defp process_data({:error, reason}, _type), do: {:error, reason}
   defp process_data(_unexpected, _type), do: {:error, :unexpected_github_response}
+
+  defp label_names(%{"labels" => labels}), do: label_names(labels)
+  defp label_names(%{labels: labels}), do: label_names(labels)
+
+  defp label_names(%{"nodes" => nodes}) when is_list(nodes),
+    do: Enum.flat_map(nodes, &label_names/1)
+
+  defp label_names(%{nodes: nodes}) when is_list(nodes), do: Enum.flat_map(nodes, &label_names/1)
+  defp label_names(%{"name" => name}), do: [name]
+  defp label_names(%{name: name}), do: [name]
+  defp label_names(name) when is_binary(name), do: [name]
+  defp label_names(_other), do: []
+
+  defp normalize_tag(name) when is_binary(name) do
+    case String.trim(name) do
+      "" -> nil
+      trimmed -> trimmed
+    end
+  end
+
+  defp normalize_tag(_non_string), do: nil
 end
