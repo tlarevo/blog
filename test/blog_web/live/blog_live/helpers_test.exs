@@ -24,4 +24,30 @@ defmodule BlogWeb.BlogLive.HelpersTest do
       assert Helpers.reading_time(body) == 3
     end
   end
+
+  describe "tag_names/1" do
+    test "always prefixes the list with All" do
+      assert Helpers.tag_names([%{"tags" => ["phoenix"]}]) == ["All", "phoenix"]
+      assert Helpers.tag_names([]) == ["All"]
+      assert Helpers.tag_names([%{}]) == ["All"]
+    end
+
+    test "collects unique sorted tags across posts" do
+      posts = [
+        %{"tags" => ["phoenix", "elixir"]},
+        %{"tags" => ["liveview", "elixir"]}
+      ]
+
+      assert Helpers.tag_names(posts) == ["All", "elixir", "liveview", "phoenix"]
+    end
+
+    test "reads labels and categories keys and name maps" do
+      posts = [
+        %{"labels" => [%{"name" => "phoenix"}]},
+        %{"categories" => ["elixir"]}
+      ]
+
+      assert Helpers.tag_names(posts) == ["All", "elixir", "phoenix"]
+    end
+  end
 end
