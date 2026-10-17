@@ -43,6 +43,55 @@ defmodule BlogWeb.BlogLiveTest do
     assert render(view) =~ ~s(aria-pressed="true")
   end
 
+  test "selecting a tag chip shows only posts carrying that label", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    assert render(view) =~ "Shipping Phoenix without fear"
+    assert render(view) =~ "A tiny note on LiveView"
+
+    view |> element(~s(.tag-chip[phx-value-tag="phoenix"])) |> render_click()
+
+    html = render(view)
+    assert html =~ "Shipping Phoenix without fear"
+    refute html =~ "A tiny note on LiveView"
+  end
+
+  test "selecting a shared label keeps every post carrying it", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    view |> element(~s(.tag-chip[phx-value-tag="elixir"])) |> render_click()
+
+    html = render(view)
+    assert html =~ "Shipping Phoenix without fear"
+    assert html =~ "A tiny note on LiveView"
+  end
+
+  test "deselecting the active tag restores the unfiltered list", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    view |> element(~s(.tag-chip[phx-value-tag="liveview"])) |> render_click()
+    refute render(view) =~ "Shipping Phoenix without fear"
+
+    view |> element(~s(.tag-chip[phx-value-tag="liveview"])) |> render_click()
+
+    html = render(view)
+    assert html =~ "Shipping Phoenix without fear"
+    assert html =~ "A tiny note on LiveView"
+  end
+
+  test "clicking the All chip clears the active filter", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    view |> element(~s(.tag-chip[phx-value-tag="phoenix"])) |> render_click()
+    refute render(view) =~ "A tiny note on LiveView"
+
+    view |> element(~s(.tag-chip[phx-value-tag="All"])) |> render_click()
+
+    assert has_element?(view, ~s(.tag-chip-selected[phx-value-tag="All"]))
+    assert render(view) =~ "Shipping Phoenix without fear"
+    assert render(view) =~ "A tiny note on LiveView"
+  end
+
   test "GET /posts/:number renders sanitized Markdown", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/posts/1")
 

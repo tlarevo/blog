@@ -23,6 +23,8 @@ defmodule BlogWeb.BlogLive.Helpers do
 
   @tag_keys ~w(tags labels categories)
 
+  @all_tag "All"
+
   @doc """
   Returns the sorted unique tag names carried by `posts`, prefixed by "All".
   """
@@ -33,7 +35,21 @@ defmodule BlogWeb.BlogLive.Helpers do
     |> Enum.reject(&is_nil/1)
     |> Enum.uniq()
     |> Enum.sort()
-    |> then(&["All" | &1])
+    |> then(&[@all_tag | &1])
+  end
+
+  @doc """
+  Filters `posts` down to those carrying the selected `tag`.
+
+  Uses the same tag extraction as `tag_names/1`, so selecting a chip shows
+  exactly the posts that contributed that chip. The `"All"` sentinel (or a
+  blank/`nil` selection) disables the filter and returns every post.
+  """
+  def filter_by_tag(posts, tag) when is_list(posts) do
+    case tag_label(tag) do
+      selected when selected in [nil, @all_tag] -> posts
+      selected -> Enum.filter(posts, &post_has_tag?(&1, selected))
+    end
   end
 
   @words_per_minute 200
@@ -47,6 +63,13 @@ defmodule BlogWeb.BlogLive.Helpers do
       |> length()
 
     max(div(words + @words_per_minute - 1, @words_per_minute), 1)
+  end
+
+  defp post_has_tag?(post, tag) do
+    post
+    |> post_tags()
+    |> Enum.map(&tag_label/1)
+    |> Enum.member?(tag)
   end
 
   defp post_tags(post) when is_map(post) do

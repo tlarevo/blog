@@ -50,4 +50,34 @@ defmodule BlogWeb.BlogLive.HelpersTest do
       assert Helpers.tag_names(posts) == ["All", "elixir", "phoenix"]
     end
   end
+
+  describe "filter_by_tag/2" do
+    test "returns every post for the All sentinel or a blank selection" do
+      posts = [%{"tags" => ["phoenix"]}, %{"tags" => ["elixir"]}]
+
+      assert Helpers.filter_by_tag(posts, "All") == posts
+      assert Helpers.filter_by_tag(posts, nil) == posts
+      assert Helpers.filter_by_tag(posts, "") == posts
+    end
+
+    test "keeps only posts carrying the selected tag" do
+      elixir_post = %{"tags" => ["phoenix", "elixir"]}
+      liveview_post = %{"tags" => ["liveview", "elixir"]}
+      phoenix_post = %{"tags" => ["phoenix"]}
+      posts = [elixir_post, liveview_post, phoenix_post]
+
+      assert Helpers.filter_by_tag(posts, "elixir") == [elixir_post, liveview_post]
+      assert Helpers.filter_by_tag(posts, "phoenix") == [elixir_post, phoenix_post]
+      assert Helpers.filter_by_tag(posts, "liveview") == [liveview_post]
+    end
+
+    test "reads labels and categories keys and name maps like tag_names/1" do
+      labeled = %{"labels" => [%{"name" => "phoenix"}]}
+      categorized = %{"categories" => ["elixir"]}
+
+      assert Helpers.filter_by_tag([labeled, categorized], "phoenix") == [labeled]
+      assert Helpers.filter_by_tag([labeled, categorized], "elixir") == [categorized]
+      assert Helpers.filter_by_tag([labeled, categorized], "unknown") == []
+    end
+  end
 end

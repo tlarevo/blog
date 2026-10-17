@@ -1,8 +1,27 @@
 defmodule BlogWeb.BlogLive.Index do
+  @moduledoc """
+  Post index with a tag-chip filter above the list.
+
+  Active-filter policy (chosen explicitly):
+
+    * There is at most one active filter. `active_tag` holds either a tag name
+      or the `"All"` sentinel, which means "no filter" and is the initial state.
+    * Clicking a chip selects its tag; clicking the selected chip again (or the
+      "All" chip) deselects and restores the unfiltered list.
+    * The filter applies to every post loaded so far, so it survives "Load
+      more"; newly appended pages are filtered by the same active tag.
+    * Filter state lives in the LiveView process only: it resets to `"All"` on
+      a fresh mount and is not persisted in the URL.
+
+  Filtering runs over the already-fetched posts in the LiveView layer, so the
+  underlying fetch and ETS cache behaviour is untouched.
+  """
+
   use BlogWeb, :live_view
 
   alias BlogWeb.BlogLive.Helpers
 
+  @all_tag "All"
   @default_count 10
 
   @impl true
@@ -25,7 +44,7 @@ defmodule BlogWeb.BlogLive.Index do
          socket
          |> update(:posts, &(&1 ++ new_posts))
          |> assign(has_next_page: has_next, end_cursor: new_cursor)
-         |> then(&assign(&1, tags: Helpers.tag_names(&1.assigns.posts)))}
+         |> refresh_derived()}
 
       {:error, _reason} ->
         {:noreply, assign(socket, load_error: :load_more_failed)}
@@ -36,7 +55,10 @@ defmodule BlogWeb.BlogLive.Index do
   end
 
   def handle_event("select-tag", %{"tag" => tag}, socket) do
-    {:noreply, assign(socket, active_tag: tag)}
+    {:noreply,
+     socket
+     |> assign(active_tag: toggle_tag(socket.assigns.active_tag, tag))
+     |> refresh_derived()}
   end
 
   defp apply_action(socket, :index, _params) do
@@ -84,9 +106,20 @@ defmodule BlogWeb.BlogLive.Index do
           )
       end
 
+    socket
+    |> assign(active_tag: @all_tag)
+    |> refresh_derived()
+  end
+
+  defp toggle_tag(current, current), do: @all_tag
+  defp toggle_tag(_current, selected), do: selected
+
+  defp refresh_derived(socket) do
+    %{posts: posts, active_tag: active_tag} = socket.assigns
+
     assign(socket,
-      tags: Helpers.tag_names(socket.assigns.posts),
-      active_tag: "All"
+      tags: Helpers.tag_names(posts),
+      visible_posts: Helpers.filter_by_tag(posts, active_tag)
     )
   end
 
