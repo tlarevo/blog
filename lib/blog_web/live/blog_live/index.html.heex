@@ -7,17 +7,34 @@
       <p>The post list could not be loaded.</p>
     </section>
   <% else %>
+    <div class="tag-chips" role="group" aria-label="Post tags">
+      <%= for tag <- @tags do %>
+        <button
+          type="button"
+          class={["tag-chip", tag == @active_tag && "tag-chip-selected"]}
+          phx-click="select-tag"
+          phx-value-tag={tag}
+          aria-pressed={to_string(tag == @active_tag)}
+        >
+          {tag}
+        </button>
+      <% end %>
+    </div>
     <%= if Enum.empty?(@posts) do %>
       <p class="meta">No posts have been published yet.</p>
     <% else %>
-      <ul class="posts">
-        <%= for post <- @posts do %>
-          <li class="post">
-            <.link navigate={~p"/posts/#{post["number"]}"}>{post["title"]}</.link>
-            <span class="meta">{BlogWeb.BlogLive.Helpers.format_date(post["createdAt"])}</span>
-          </li>
-        <% end %>
-      </ul>
+      <%= if Enum.empty?(@visible_posts) do %>
+        <p class="meta">No posts match the selected tag.</p>
+      <% else %>
+        <ul class="posts">
+          <%= for post <- @visible_posts do %>
+            <li class="post">
+              <.link navigate={~p"/posts/#{post["number"]}"}>{post["title"]}</.link>
+              <span class="meta">{BlogWeb.BlogLive.Helpers.format_date(post["createdAt"])}</span>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
       <%= if @has_next_page do %>
         <button
           class="load-more"

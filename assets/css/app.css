@@ -320,6 +320,40 @@ footer {
   margin-inline-start: 0.5rem;
 }
 
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block: 1.5rem;
+}
+
+.tag-chip {
+  background: transparent;
+  border: 2px solid var(--color-border);
+  border-radius: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  padding: 0.4em 1em;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tag-chip:hover,
+.tag-chip:focus {
+  background-color: var(--color-primary-hover);
+  color: #ffffff;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.tag-chip-selected,
+.tag-chip[aria-pressed="true"] {
+  background-color: var(--color-primary);
+  border-block-end-color: transparent;
+  color: #ffffff;
+}
+
 .load-more {
   background: transparent;
   border: 2px solid var(--color-border);
