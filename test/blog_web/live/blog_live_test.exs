@@ -92,6 +92,84 @@ defmodule BlogWeb.BlogLiveTest do
     assert render(view) =~ "A tiny note on LiveView"
   end
 
+  describe "load more with the tag filter" do
+    test "with no filter active, appends the whole next page as before", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      assert has_element?(view, ".load-more")
+
+      view |> element(".load-more") |> render_click()
+
+      html = render(view)
+      assert html =~ "Shipping Phoenix without fear"
+      assert html =~ "A tiny note on LiveView"
+      assert html =~ "Plugs and pipelines in Phoenix"
+      assert html =~ "LiveView streams in practice"
+    end
+
+    test "with no filter active, keeps paginating until the last page", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      view |> element(".load-more") |> render_click()
+      view |> element(".load-more") |> render_click()
+
+      html = render(view)
+      assert html =~ "OTP supervision trees"
+      assert html =~ "Query composition in Ecto"
+      refute has_element?(view, ".load-more")
+    end
+
+    test "with an active tag, appends only posts matching that tag", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      view |> element(~s(.tag-chip[phx-value-tag="phoenix"])) |> render_click()
+      view |> element(".load-more") |> render_click()
+
+      html = render(view)
+      assert html =~ "Shipping Phoenix without fear"
+      assert html =~ "Plugs and pipelines in Phoenix"
+      refute html =~ "LiveView streams in practice"
+      refute html =~ "A tiny note on LiveView"
+    end
+
+    test "later pages keep matching the active tag as pagination advances", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      view |> element(~s(.tag-chip[phx-value-tag="elixir"])) |> render_click()
+      view |> element(".load-more") |> render_click()
+
+      html = render(view)
+      assert html =~ "Shipping Phoenix without fear"
+      refute html =~ "Plugs and pipelines in Phoenix"
+      refute html =~ "LiveView streams in practice"
+
+      view |> element(".load-more") |> render_click()
+
+      html = render(view)
+      assert html =~ "OTP supervision trees"
+      assert html =~ "Query composition in Ecto"
+      refute html =~ "Plugs and pipelines in Phoenix"
+      refute html =~ "LiveView streams in practice"
+    end
+
+    test "non-matching posts are never appended, so clearing the filter does not resurrect them",
+         %{
+           conn: conn
+         } do
+      {:ok, view, _html} = live(conn, ~p"/")
+
+      view |> element(~s(.tag-chip[phx-value-tag="phoenix"])) |> render_click()
+      view |> element(".load-more") |> render_click()
+      view |> element(~s(.tag-chip[phx-value-tag="All"])) |> render_click()
+
+      html = render(view)
+      assert html =~ "Shipping Phoenix without fear"
+      assert html =~ "A tiny note on LiveView"
+      assert html =~ "Plugs and pipelines in Phoenix"
+      refute html =~ "LiveView streams in practice"
+    end
+  end
+
   test "GET /posts/:number renders sanitized Markdown", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/posts/1")
 

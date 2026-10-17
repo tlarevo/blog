@@ -8,13 +8,17 @@ defmodule BlogWeb.BlogLive.Index do
       or the `"All"` sentinel, which means "no filter" and is the initial state.
     * Clicking a chip selects its tag; clicking the selected chip again (or the
       "All" chip) deselects and restores the unfiltered list.
-    * The filter applies to every post loaded so far, so it survives "Load
-      more"; newly appended pages are filtered by the same active tag.
+    * "Load more" keeps its cursor pagination and page size, but appends only
+      the posts of each fetched page that match the active tag; with the "All"
+      sentinel the whole page is appended, exactly as before the filter
+      existed. Non-matching posts are not appended at all, so they do not
+      reappear when the filter is later cleared.
     * Filter state lives in the LiveView process only: it resets to `"All"` on
       a fresh mount and is not persisted in the URL.
 
-  Filtering runs over the already-fetched posts in the LiveView layer, so the
-  underlying fetch and ETS cache behaviour is untouched.
+  Filtering (the visible list and the "Load more" appends alike) runs over
+  already-fetched posts in the LiveView layer, so the underlying fetch and ETS
+  cache behaviour is untouched.
   """
 
   use BlogWeb, :live_view
@@ -36,13 +40,15 @@ defmodule BlogWeb.BlogLive.Index do
 
   @impl true
   def handle_event("load-more", _params, socket) do
-    %{end_cursor: cursor} = socket.assigns
+    %{end_cursor: cursor, active_tag: active_tag} = socket.assigns
 
     case blog_source().fetch_posts(@default_count, [:id, :number, :title, :createdAt], cursor) do
       {:ok, %{posts: new_posts, has_next_page: has_next, end_cursor: new_cursor}} ->
+        matching_posts = Helpers.filter_by_tag(new_posts, active_tag)
+
         {:noreply,
          socket
-         |> update(:posts, &(&1 ++ new_posts))
+         |> update(:posts, &(&1 ++ matching_posts))
          |> assign(has_next_page: has_next, end_cursor: new_cursor)
          |> refresh_derived()}
 
