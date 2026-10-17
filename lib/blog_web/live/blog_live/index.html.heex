@@ -7,6 +7,19 @@
       <p>The post list could not be loaded.</p>
     </section>
   <% else %>
+    <div class="tag-chips" role="group" aria-label="Post tags">
+      <%= for tag <- @tags do %>
+        <button
+          type="button"
+          class={["tag-chip", tag == @active_tag && "tag-chip-selected"]}
+          phx-click="select-tag"
+          phx-value-tag={tag}
+          aria-pressed={to_string(tag == @active_tag)}
+        >
+          {tag}
+        </button>
+      <% end %>
+    </div>
     <%= if Enum.empty?(@posts) do %>
       <p class="meta">No posts have been published yet.</p>
     <% else %>
