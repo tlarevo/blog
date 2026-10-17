@@ -7,14 +7,16 @@ defmodule Blog.TestSource do
       "number" => 1,
       "title" => "Shipping Phoenix without fear",
       "createdAt" => "2026-05-20T09:30:00Z",
-      "labels" => %{"nodes" => [%{"name" => "phoenix"}, %{"name" => "elixir"}]}
+      "labels" => %{"nodes" => [%{"name" => "phoenix"}, %{"name" => "elixir"}]},
+      "tags" => ["phoenix", "elixir"]
     },
     %{
       "id" => "discussion-2",
       "number" => 2,
       "title" => "A tiny note on LiveView",
       "createdAt" => "2026-05-18T14:45:00Z",
-      "labels" => %{"nodes" => [%{"name" => "elixir"}, %{"name" => ""}]}
+      "labels" => %{"nodes" => [%{"name" => "elixir"}, %{"name" => ""}]},
+      "tags" => ["liveview", "elixir"]
     }
   ]
 

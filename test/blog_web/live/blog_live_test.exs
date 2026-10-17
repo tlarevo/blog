@@ -18,6 +18,31 @@ defmodule BlogWeb.BlogLiveTest do
     assert html =~ "Shipping Phoenix without fear"
   end
 
+  test "index renders a retro tag chip row above the post list", %{conn: conn} do
+    {:ok, _view, html} = live(conn, ~p"/")
+
+    assert html =~ "tag-chips"
+    assert html =~ "tag-chip"
+
+    {chip_row_pos, _} = :binary.match(html, "tag-chips")
+    {post_list_pos, _} = :binary.match(html, ~s(<ul class="posts">))
+
+    assert chip_row_pos < post_list_pos
+  end
+
+  test "tag chips have an active selected state", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/")
+
+    assert has_element?(view, ~s(.tag-chip-selected[phx-value-tag="All"]))
+    assert has_element?(view, ~s(.tag-chip[phx-value-tag="elixir"]))
+
+    view |> element(~s(.tag-chip[phx-value-tag="elixir"])) |> render_click()
+
+    assert has_element?(view, ~s(.tag-chip-selected[phx-value-tag="elixir"]))
+    refute has_element?(view, ~s(.tag-chip-selected[phx-value-tag="All"]))
+    assert render(view) =~ ~s(aria-pressed="true")
+  end
+
   test "GET /posts/:number renders sanitized Markdown", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/posts/1")
 

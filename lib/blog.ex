@@ -148,7 +148,11 @@ defmodule Blog do
     case run_query(query, token) do
       {:error, reason} when attempt < @max_retries and reason != :missing_github_token ->
         delay = @base_retry_delay_ms * Integer.pow(2, attempt - 1)
-        Logger.warning("GitHub request failed (attempt #{attempt}/#{ @max_retries}), retrying in #{delay}ms: #{inspect(reason)}")
+
+        Logger.warning(
+          "GitHub request failed (attempt #{attempt}/#{@max_retries}), retrying in #{delay}ms: #{inspect(reason)}"
+        )
+
         Process.sleep(delay)
         run_query_with_retry(query, token, attempt + 1)
 
